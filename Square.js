@@ -71,6 +71,7 @@ function drawsquare(gl, program, x, y, icolor, scale) {
 
   gl.drawArrays(gl.TRIANGLES, 0, 12);
 
+
 }
 
 /*function s_distance(x,y,cx,cy){

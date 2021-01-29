@@ -118,6 +118,10 @@ function mousehandler(gl, event) {
   rasteriseshapes(x, y);
 }
 
+var minind = null
+
+
+
 function rasteriseshapes(x, y) {
   if (mode === 0) {
     switch (key) {
@@ -151,14 +155,51 @@ function rasteriseshapes(x, y) {
 
     if (minind !== null) {
       objects[minind].setcolor([0, 0, 0, 1]);
+
     }
     renderobjects();
   }
+
+  else if(mode === 1)
+  {
+    if(minind !== null){
+        console.log("hello")
+        objects[minind].setcolor()
+    }
+      var dist = [];
+      var minint = Infinity
+      
+    for(var i= objects.length - 1;i>=0;i--)
+    {
+        let d = objects[i].near(x,y)
+        dist.push(d)
+        if(d < minint)
+        {
+            minint = d;
+            minind = i;
+        } 
+    }
+
+    console.log(dist)
+    console.log(minind)
+    objects[minind].setcolor([0,0,0,1])
+    
+    for (var i = 0; i < objects.length; i++) {
+        //console.log(objects[i].x)
+        objects[i].render()
+      }
+
+    if(key === "arrowup"){
+
+    }
+  }
+  
 }
 
 class Shape {
   constructor(type, x, y, color = null) {
     this.type = type;
+
     if (type === "s") {
       this.draw = drawsquare;
       this.color = color ? color : [1, 0, 1, 1];
@@ -183,6 +224,13 @@ class Shape {
     if (this.type === "s") this.color = color ? color : [1, 0, 1, 1];
     else if (this.type === "r") this.color = color ? color : [1, 0, 0, 1];
     else if (this.type === "c") this.color = color ? color : [0, 0, 1, 1];
+  }
+
+  setcolor(color = null){
+      if(this.type === "s") this.color = color ? color : [1,0,1,1]
+      else if(this.type === "r") this.color = color ? color : [1,0,0,1]
+      else if(this.type === "c") this.color = color ? color : [0,0,1,1]
+      
   }
 
   render() {
@@ -211,5 +259,12 @@ function renderobjects() {
     }
   } else {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+  }
+
+    
+  near(mx,my){
+      //console.log(mx,my)
+      return this.distance(mx,my,this.x,this.y)
+      
   }
 }
