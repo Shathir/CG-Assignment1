@@ -43,6 +43,8 @@ function resizeCanvasToDisplaySize(canvas) {
   return needResize;
 }
 
+
+
 function keyBoardhandler(gl, program, event) {
   key = event.key.toLowerCase();
   switch (key) {
@@ -53,13 +55,20 @@ function keyBoardhandler(gl, program, event) {
 }
 
 var objects = [];
+
 function mousehandler(gl, program, event) {
   const cvs = gl.canvas.getBoundingClientRect();
   let x = event.clientX - cvs.left;
   let y = cvs.bottom - event.clientY;
 
+  //console.log(x,y)
+
   rasteriseshapes(x, y);
 }
+
+var minind = null
+
+
 
 function rasteriseshapes(x, y) {
   if (mode === 0) {
@@ -76,31 +85,84 @@ function rasteriseshapes(x, y) {
       default:
         break;
     }
+    
     for (var i = 0; i < objects.length; i++) {
-      console.log(objects[i].x)
+      //console.log(objects[i].x)
       objects[i].render()
     }
   }
+
+  else if(mode === 1)
+  {
+    if(minind !== null){
+        console.log("hello")
+        objects[minind].setcolor()
+    }
+      var dist = [];
+      var minint = Infinity
+      
+    for(var i= objects.length - 1;i>=0;i--)
+    {
+        let d = objects[i].near(x,y)
+        dist.push(d)
+        if(d < minint)
+        {
+            minint = d;
+            minind = i;
+        } 
+    }
+
+    console.log(dist)
+    console.log(minind)
+    objects[minind].setcolor([0,0,0,1])
+    
+    for (var i = 0; i < objects.length; i++) {
+        //console.log(objects[i].x)
+        objects[i].render()
+      }
+
+    if(key === "arrowup"){
+
+    }
+  }
+  
 }
 
 class Shape {
-  constructor(type, x, y) {
+  constructor(type, x, y,color = null) {
     this.type = type
     if (type === "s") {
       this.draw = drawsquare;
-      this.color = [1, 0, 1, 1];
+      this.color = color ? color : [1, 0, 1, 1];
+      this.distance = s_distance;
     } else if (type === "r") {
       this.draw = drawrectangle;
-      this.color = [1, 0, 0, 1];
+      this.color = color ? color : [1, 0, 0, 1];
+      this.distance = r_distance
     } else if (type === "c") {
       this.draw = drawcircle;
-      this.color = [0, 0, 1, 1];
+      this.color = color ? color : [0, 0, 1, 1];
+      this.distance = c_distance;
     }
     this.x = x;
     this.y = y;
   }
 
+  setcolor(color = null){
+      if(this.type === "s") this.color = color ? color : [1,0,1,1]
+      else if(this.type === "r") this.color = color ? color : [1,0,0,1]
+      else if(this.type === "c") this.color = color ? color : [0,0,1,1]
+      
+  }
+
   render() {
     this.draw(gl, program, this.x, this.y, this.color);
+  }
+
+    
+  near(mx,my){
+      //console.log(mx,my)
+      return this.distance(mx,my,this.x,this.y)
+      
   }
 }

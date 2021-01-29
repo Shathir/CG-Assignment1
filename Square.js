@@ -12,7 +12,7 @@ function drawsquare(gl, program, x, y, icolor) {
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
   let x1 = (x - 400) / 400;
-  let y1 = (y - 300) / 300;
+  let y1 = (y - 400) / 400;
 
   var positions = [
     x1,
@@ -70,4 +70,101 @@ function drawsquare(gl, program, x, y, icolor) {
   );
 
   gl.drawArrays(gl.TRIANGLES, 0, 12);
+
 }
+
+/*function s_distance(x,y,cx,cy){
+
+    //console.log(x,y,cx,cy)
+
+    d0x = Math.abs(x-cx)/400
+    d0y = Math.abs(y-cy)/400 
+
+    //console.log(d0x)
+    //console.log(d0y)
+
+    if(d0x <= 0.05 && d0y <= 0.05)
+    {
+       //console.log("Hello world")
+        return -Infinity;
+    }
+
+    else 
+    {
+    d1 = Math.sqrt(((x-(cx-0.05))**2+(y-(cy+0.05))**2))/400
+    d2 = Math.sqrt(((x-(cx-0.05))**2+(y-(cy-0.05))**2))/400
+    d3 = Math.sqrt((x-(cx+0.05))**2+(y-(cy-0.05))**2)/400
+    d4 = Math.sqrt((x-(cx+0.05))**2+(y-(cy+0.05))**2)/400
+    d7 = Math.sqrt((x-(cx+0.05))**2+(y)**2)/400
+    d5 = Math.sqrt((x-(cx-0.05))**2+(y)**2)/400
+    d8 = Math.sqrt((x)**2+(y-(cy+0.05))**2)/400
+    d6 = Math.sqrt((x)**2+(y-(cy-0.05))**2)/400
+    dist = Math.min(d1,d2,d3,d4)
+
+    //console.log(d1,d2,d3,d4,d5,d6,d7,d8)
+
+    if(dist === d1){
+        dist1 = Math.min(d5,d8);
+        if(dist1 === d5)
+        {
+            dist5 = Math.min(d1,d5)
+            if(dist5 === d5) return (Math.abs(x-cx) - 0.05)/400; 
+            else return d1
+        }
+        else{
+            dist6 = Math.min(d1,d8)
+            if(dist6 === d8) return (Math.abs(y-cy) - 0.05)/400; 
+            else return d1
+        }
+    }
+    else if(dist === d2){
+        dist2 = Math.min(d6,d5);
+        if(dist2 === d5)
+        {
+            dist7 = Math.min(d2,d5)
+            if(dist7 === d5) return (Math.abs(x-cx) - 0.05)/400; 
+            else return d2
+        }
+        else{
+            dist5 = Math.min(d2,d6)
+            if(dist5 === d6) return (Math.abs(y-cy) - 0.05)/400; 
+            else return d2
+        }
+    }
+    else if(dist === d3){
+        dist3 = Math.min(d6,d7)
+        if(dist3 === d7)
+        {
+            dist5 = Math.min(d3,d7)
+            if(dist5 === d7) return (Math.abs(x-cx) - 0.05)/400; 
+            else return d3
+        }
+        else{
+            dist6 = Math.min(d3,d6)
+            if(dist6 === d6) return (Math.abs(y-cy) - 0.05)/400; 
+            else return d3
+        }
+    }
+    else{
+        dist4 = Math.min(d7,d8)
+        if(dist4 === d7)
+        {
+            dist5 = Math.min(d4,d7)
+            if(dist5 === d7) return (Math.abs(x-cx) - 0.05)/400; 
+            else return d4
+        }
+        else{
+            dist6 = Math.min(d4,d8)
+            if(dist6 === d8) return (Math.abs(y-cy) - 0.05)/400; 
+            else return d4
+        }
+    }
+}
+} */
+
+function s_distance(x,y,cx,cy){
+    
+    d = Math.sqrt((x-cx)**2 + (y-cy)**2)/400
+    return d;
+}
+
