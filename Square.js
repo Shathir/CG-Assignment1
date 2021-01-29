@@ -1,4 +1,4 @@
-function drawsquare(gl, program, x, y, icolor, scale) {
+function drawsquare(gl, program, x, y, icolor, scale, rotate = {x:400 , y:400, t:0}) {
   //icolor = [1,0,1,1]
   var positionAttributeLocation = gl.getAttribLocation(
     program,
@@ -11,10 +11,15 @@ function drawsquare(gl, program, x, y, icolor, scale) {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
+  
+  rotate.x = rotate.x-400/400;
+  rotate.y = rotate.y-400/400;
+  
+
   let x1 = (x - 400) / 400;
   let y1 = (y - 400) / 400;
 
-  var positions = [
+ /* var positions = [
     x1,
     y1,
     x1 + 0.05*scale,
@@ -40,6 +45,42 @@ function drawsquare(gl, program, x, y, icolor, scale) {
     x1 + 0.05*scale,
     y1 - 0.05*scale,
   ];
+*/
+
+
+var positions = [
+    rotatex(x1,y1,rotate),
+    rotatey(x1,y1,rotate),
+    rotatex(x1+0.05*scale,y1+0.05*scale,rotate),
+    rotatey(x1+0.05*scale,y1+0.05*scale,rotate),
+    rotatex(x1+0.05*scale,y1-0.05*scale,rotate),
+    rotatey(x1+0.05*scale,y1-0.05*scale,rotate),
+    
+    
+    rotatex(x1,y1,rotate),
+    rotatey(x1,y1,rotate),
+    rotatex(x1+0.05*scale,y1+0.05*scale,rotate),
+    rotatey(x1+0.05*scale,y1+0.05*scale,rotate),
+    rotatex(x1-0.05*scale,y1+0.05*scale,rotate),
+    rotatey(x1-0.05*scale,y1+0.05*scale,rotate),
+    
+    
+    rotatex(x1,y1,rotate),
+    rotatey(x1,y1,rotate),
+    rotatex(x1-0.05*scale,y1+0.05*scale,rotate),
+    rotatey(x1-0.05*scale,y1+0.05*scale,rotate),
+    rotatex(x1-0.05*scale,y1-0.05*scale,rotate),
+    rotatey(x1-0.05*scale,y1-0.05*scale,rotate),
+
+    
+    rotatex(x1,y1,rotate),
+    rotatey(x1,y1,rotate),
+    rotatex(x1-0.05*scale,y1-0.05*scale,rotate),
+    rotatey(x1-0.05*scale,y1-0.05*scale,rotate),
+    rotatex(x1+0.05*scale,y1-0.05*scale,rotate),
+    rotatey(x1+0.05*scale,y1-0.05*scale,rotate),
+  ];
+
 
   resizeCanvasToDisplaySize(gl.canvas);
 
@@ -175,3 +216,11 @@ function s_distance(x,y,cx,cy,scale){
     return d;
 }
 
+
+function rotatex(x,y,rotate){
+    return  rotate.x + (x - rotate.x)*Math.cos(Math.PI*rotate.t/180) - (y - rotate.y)*Math.sin(Math.PI*rotate.t/180);
+}
+
+function rotatey(x,y,rotate){
+    return   rotate.y + (x - rotate.x)*Math.sin(Math.PI*rotate.t/180) + (y - rotate.y)*Math.cos(Math.PI*rotate.t/180);
+}

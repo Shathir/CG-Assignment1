@@ -1,4 +1,4 @@
-function drawrectangle(gl, program, x, y, icolor, scale) {
+function drawrectangle(gl, program, x, y, icolor, scale, rotate = {x:400, y:400, t:0}) {
   var positionAttributeLocation = gl.getAttribLocation(
     program,
     "vect_position"
@@ -10,10 +10,19 @@ function drawrectangle(gl, program, x, y, icolor, scale) {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-  let x1 = (x - 400) / 400;
-  let y1 = (y - 400) / 400;
+ //let  x1= rotate.x + (x - rotate.x)*Math.cos(Math.PI*rotate.t/180) - (y - rotate.y)*Math.sin(Math.PI*rotate.t/180)
+ //let  y1 =  rotate.y + (x - rotate.x)*Math.sin(Math.PI*rotate.t/180) + (y - rotate.y)*Math.cos(Math.PI*rotate.t/180)
 
-  var positions = [
+   let x1 = (x - 400) / 400;
+   let y1 = (y - 400) / 400;
+
+   rotate.x = rotate.x-400/400;
+   rotate.y = rotate.y-400/400;
+   
+
+   
+
+ /* var positions = [
     x1,
     y1,
     x1 + 0.05*scale,
@@ -39,6 +48,42 @@ function drawrectangle(gl, program, x, y, icolor, scale) {
     x1 + 0.05*scale,
     y1 - 0.1*scale,
   ];
+  */
+
+ var positions = [
+    rotatex(x1,y1,rotate),
+    rotatey(x1,y1,rotate),
+    rotatex(x1+0.05*scale,y1+0.1*scale,rotate),
+    rotatey(x1+0.05*scale,y1+0.1*scale,rotate),
+    rotatex(x1+0.05*scale,y1-0.1*scale,rotate),
+    rotatey(x1+0.05*scale,y1-0.1*scale,rotate),
+    
+    
+    rotatex(x1,y1,rotate),
+    rotatey(x1,y1,rotate),
+    rotatex(x1+0.05*scale,y1+0.1*scale,rotate),
+    rotatey(x1+0.05*scale,y1+0.1*scale,rotate),
+    rotatex(x1-0.05*scale,y1+0.1*scale,rotate),
+    rotatey(x1-0.05*scale,y1+0.1*scale,rotate),
+    
+    
+    rotatex(x1,y1,rotate),
+    rotatey(x1,y1,rotate),
+    rotatex(x1-0.05*scale,y1+0.1*scale,rotate),
+    rotatey(x1-0.05*scale,y1+0.1*scale,rotate),
+    rotatex(x1-0.05*scale,y1-0.1*scale,rotate),
+    rotatey(x1-0.05*scale,y1-0.1*scale,rotate),
+
+    
+    rotatex(x1,y1,rotate),
+    rotatey(x1,y1,rotate),
+    rotatex(x1-0.05*scale,y1-0.1*scale,rotate),
+    rotatey(x1-0.05*scale,y1-0.1*scale,rotate),
+    rotatex(x1+0.05*scale,y1-0.1*scale,rotate),
+    rotatey(x1+0.05*scale,y1-0.1*scale,rotate),
+  ];
+
+  //console.log(positions)
 
   resizeCanvasToDisplaySize(gl.canvas);
 
@@ -174,4 +219,12 @@ function r_distance(x,y,cx,cy,scale)
     d = Math.sqrt((x-cx)**2 + (y-cy)**2)/400
 
     return d;
+}
+
+function rotatex(x,y,rotate){
+    return  rotate.x + (x - rotate.x)*Math.cos(Math.PI*rotate.t/180) - (y - rotate.y)*Math.sin(Math.PI*rotate.t/180);
+}
+
+function rotatey(x,y,rotate){
+    return   rotate.y + (x - rotate.x)*Math.sin(Math.PI*rotate.t/180) + (y - rotate.y)*Math.cos(Math.PI*rotate.t/180);
 }

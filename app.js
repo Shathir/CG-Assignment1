@@ -46,6 +46,59 @@ function resizeCanvasToDisplaySize(canvas) {
 var minind = null;
 var translations = {};
 
+/*function bound_centroid(scale){
+    minX = Infinity
+    maxX = -Infinity
+    minY = Infinity
+    maxY = -Infinity
+    for(var i in objects)
+    {
+        if(objects.i.type === "s")
+        {
+            x1 = (objects.i.x - 400)/400 + 0.05*scale
+            x2 = (objects.i.x - 400)/400 - 0.05*scale
+            y1 = (objects.i.y - 400)/400 + 0.05*scale
+            y2 = (objects.i.y - 400)/400 - 0.05*scale
+
+            if(minX > x2) minX = x2;
+            if(maxX < x1) maxX = x1;
+            if(minX > y2) minX = y2;
+            if(maxX < y1) maxX = y1;
+
+             
+        }
+        else if(objects.i.type === "r")
+        {
+            
+            x1 = (objects.i.x - 400)/400 + 0.05*scale
+            x2 = (objects.i.x - 400)/400 - 0.05*scale
+            y1 = (objects.i.y - 400)/400 + 0.1*scale
+            y2 = (objects.i.y - 400)/400 - 0.1*scale
+
+            if(minX > x2) minX = x2;
+            if(maxX < x1) maxX = x1;
+            if(minX > y2) minX = y2;
+            if(maxX < y1) maxX = y1;
+
+
+        }
+        else if(objects.i.type === "c")
+        {
+            
+            x1 = (objects.i.x - 400)/400 + 0.1*scale
+            x2 = (objects.i.x - 400)/400 - 0.1*scale
+            y1 = (objects.i.y - 400)/400 + 0.1*scale
+            y2 = (objects.i.y - 400)/400 - 0.1*scale
+
+            if(minX > x2) minX = x2;
+            if(maxX < x1) maxX = x1;
+            if(minX > y2) minX = y2;
+            if(maxX < y1) maxX = y1;
+
+        }
+    }
+}*/
+
 function keyBoardhandler(gl, program, event) {
   key = event.key.toLowerCase();
   switch (key) {
@@ -71,7 +124,10 @@ function keyBoardhandler(gl, program, event) {
         if (!(minind in translations)) translations[minind] = { x: -10, y: 0, s: 1 };
         else translations[minind].x -= 10;
       }
-      renderobjects();
+      else if(mode === 2){
+        
+    }
+    renderobjects()
       break;
     case "arrowright":
       if (mode === 1) {
@@ -189,9 +245,6 @@ function rasteriseshapes(x, y) {
         objects[i].render()
       }
 
-    if(key === "arrowup"){
-
-    }
   }
   
 }
@@ -261,10 +314,8 @@ function renderobjects() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
   }
 
-    
-  near(mx,my){
-      //console.log(mx,my)
-      return this.distance(mx,my,this.x,this.y)
-      
-  }
+
 }
+
+
+
