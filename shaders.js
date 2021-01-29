@@ -3,9 +3,8 @@ var vertexshadersource = `
         void main(){
             gl_Position = vect_position;
         }        
-`
-var fragmentshadersource = 
-`
+`;
+var fragmentshadersource = `
     precision mediump float;
 
     uniform vec4 icolor;
@@ -14,42 +13,42 @@ var fragmentshadersource =
     {
         gl_FragColor = icolor; 
     }
-`
+`;
 function createShader(gl, type, source) {
-    var shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (success) {
-      return shader;
-    }
-  
-    console.log(gl.getShaderInfoLog(shader));
-    gl.deleteShader(shader);
+  var shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+  if (success) {
+    return shader;
   }
 
-  function createProgram(gl, vertexShader, fragmentShader) {
-    var program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    var success = gl.getProgramParameter(program, gl.LINK_STATUS);
-    if (success) {
-      return program;
-    }
-  
-    console.log(gl.getProgramInfoLog(program));
-    gl.deleteProgram(program);
-  }
-
-function shaderprogram(gl)
-{
-    var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexshadersource);
-    var fragmentShader = createShader(gl,gl.FRAGMENT_SHADER, fragmentshadersource);
-
-    var program = createProgram(gl, vertexShader, fragmentShader);
-    return program
+  console.log(gl.getShaderInfoLog(shader));
+  gl.deleteShader(shader);
 }
-  
 
+function createProgram(gl, vertexShader, fragmentShader) {
+  var program = gl.createProgram();
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+  var success = gl.getProgramParameter(program, gl.LINK_STATUS);
+  if (success) {
+    return program;
+  }
 
+  console.log(gl.getProgramInfoLog(program));
+  gl.deleteProgram(program);
+}
+
+function shaderprogram(gl) {
+  var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexshadersource);
+  var fragmentShader = createShader(
+    gl,
+    gl.FRAGMENT_SHADER,
+    fragmentshadersource
+  );
+
+  var program = createProgram(gl, vertexShader, fragmentShader);
+  return program;
+}
