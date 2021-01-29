@@ -1,4 +1,4 @@
-function drawsquare(gl, program, x, y, icolor) {
+function drawsquare(gl, program, x, y, icolor, scale) {
   //icolor = [1,0,1,1]
   var positionAttributeLocation = gl.getAttribLocation(
     program,
@@ -17,28 +17,28 @@ function drawsquare(gl, program, x, y, icolor) {
   var positions = [
     x1,
     y1,
-    x1 + 0.05,
-    y1 + 0.05,
-    x1 + 0.05,
-    y1 - 0.05,
+    x1 + 0.05*scale,
+    y1 + 0.05*scale,
+    x1 + 0.05*scale,
+    y1 - 0.05*scale,
     x1,
     y1,
-    x1 + 0.05,
-    y1 + 0.05,
-    x1 - 0.05,
-    y1 + 0.05,
+    x1 + 0.05*scale,
+    y1 + 0.05*scale,
+    x1 - 0.05*scale,
+    y1 + 0.05*scale,
     x1,
     y1,
-    x1 - 0.05,
-    y1 + 0.05,
-    x1 - 0.05,
-    y1 - 0.05,
+    x1 - 0.05*scale,
+    y1 + 0.05*scale,
+    x1 - 0.05*scale,
+    y1 - 0.05*scale,
     x1,
     y1,
-    x1 - 0.05,
-    y1 - 0.05,
-    x1 + 0.05,
-    y1 - 0.05,
+    x1 - 0.05*scale,
+    y1 - 0.05*scale,
+    x1 + 0.05*scale,
+    y1 - 0.05*scale,
   ];
 
   resizeCanvasToDisplaySize(gl.canvas);
@@ -70,6 +70,7 @@ function drawsquare(gl, program, x, y, icolor) {
   );
 
   gl.drawArrays(gl.TRIANGLES, 0, 12);
+
 
 }
 
@@ -162,8 +163,14 @@ function drawsquare(gl, program, x, y, icolor) {
 }
 } */
 
-function s_distance(x,y,cx,cy){
-    
+function s_distance(x,y,cx,cy,scale){
+    d0x = Math.abs(x-cx)/400
+    d0y = Math.abs(y-cy)/400 
+    if(d0x <= 0.05*scale && d0y <= 0.05*scale)
+    {
+        return -Infinity;
+    }
+
     d = Math.sqrt((x-cx)**2 + (y-cy)**2)/400
     return d;
 }

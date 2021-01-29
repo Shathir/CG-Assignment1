@@ -1,4 +1,4 @@
-function drawrectangle(gl, program, x, y, icolor) {
+function drawrectangle(gl, program, x, y, icolor, scale) {
   var positionAttributeLocation = gl.getAttribLocation(
     program,
     "vect_position"
@@ -16,28 +16,28 @@ function drawrectangle(gl, program, x, y, icolor) {
   var positions = [
     x1,
     y1,
-    x1 + 0.05,
-    y1 + 0.1,
-    x1 + 0.05,
-    y1 - 0.1,
+    x1 + 0.05*scale,
+    y1 + 0.1*scale,
+    x1 + 0.05*scale,
+    y1 - 0.1*scale,
     x1,
     y1,
-    x1 + 0.05,
-    y1 + 0.1,
-    x1 - 0.05,
-    y1 + 0.1,
+    x1 + 0.05*scale,
+    y1 + 0.1*scale,
+    x1 - 0.05*scale,
+    y1 + 0.1*scale,
     x1,
     y1,
-    x1 - 0.05,
-    y1 + 0.1,
-    x1 - 0.05,
-    y1 - 0.1,
+    x1 - 0.05*scale,
+    y1 + 0.1*scale,
+    x1 - 0.05*scale,
+    y1 - 0.1*scale,
     x1,
     y1,
-    x1 - 0.05,
-    y1 - 0.1,
-    x1 + 0.05,
-    y1 - 0.1,
+    x1 - 0.05*scale,
+    y1 - 0.1*scale,
+    x1 + 0.05*scale,
+    y1 - 0.1*scale,
   ];
 
   resizeCanvasToDisplaySize(gl.canvas);
@@ -162,8 +162,15 @@ function drawrectangle(gl, program, x, y, icolor) {
 }
 } */
 
-function r_distance(x,y,cx,cy)
+function r_distance(x,y,cx,cy,scale)
 {
+    d0x = Math.abs(x-cx)/400
+    d0y = Math.abs(y-cy)/400 
+    if(d0x <= 0.05*scale && d0y <= 0.1*scale)
+    {
+        return -Infinity;
+    }
+
     d = Math.sqrt((x-cx)**2 + (y-cy)**2)/400
 
     return d;

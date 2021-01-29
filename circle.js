@@ -1,4 +1,4 @@
-function drawcircle(gl, program, x, y, icolor) {
+function drawcircle(gl, program, x, y, icolor, scale) {
   var positionAttributeLocation = gl.getAttribLocation(
     program,
     "vect_position"
@@ -17,10 +17,10 @@ function drawcircle(gl, program, x, y, icolor) {
     positions.push(
       x1,
       y1,
-      x1 + 0.1 * Math.cos((i * Math.PI) / 10),
-      y1 + 0.1 * Math.sin((i * Math.PI) / 10),
-      x1 + 0.1 * Math.cos(((i + 1) * Math.PI) / 10),
-      y1 + 0.1 * Math.sin(((i + 1) * Math.PI) / 10)
+      x1 + 0.1*scale * Math.cos((i * Math.PI) / 10),
+      y1 + 0.1*scale * Math.sin((i * Math.PI) / 10),
+      x1 + 0.1*scale * Math.cos(((i + 1) * Math.PI) / 10),
+      y1 + 0.1*scale * Math.sin(((i + 1) * Math.PI) / 10)
     );
   }
 
@@ -56,16 +56,16 @@ function drawcircle(gl, program, x, y, icolor) {
 }
 
 
-function c_distance(x,y,cx,cy){
+function c_distance(x,y,cx,cy,scale){
 
   d1 = Math.sqrt(((Math.abs(x-cx))/400)**2 + ((Math.abs(y-cy))/400)**2)
 
-  if(d1 < 0.1)
+  if(d1 < 0.1*scale)
   {
     return -Infinity
   }
   else
   {
-    return (d1 - 0.1);
+    return (d1 - 0.1*scale);
   }
 }
