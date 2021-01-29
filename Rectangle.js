@@ -1,4 +1,4 @@
-function drawrectangle(gl, program, x, y, icolor, scale, rotate = {x:400, y:400, t:0}) {
+function drawrectangle(gl, program, x, y, icolor, scale, rotate = {x:0, y:0, t:0}) {
   var positionAttributeLocation = gl.getAttribLocation(
     program,
     "vect_position"
@@ -16,13 +16,7 @@ function drawrectangle(gl, program, x, y, icolor, scale, rotate = {x:400, y:400,
    let x1 = (x - 400) / 400;
    let y1 = (y - 400) / 400;
 
-   rotate.x = rotate.x-400/400;
-   rotate.y = rotate.y-400/400;
-   
-
-   
-
- /* var positions = [
+   /* var positions = [
     x1,
     y1,
     x1 + 0.05*scale,

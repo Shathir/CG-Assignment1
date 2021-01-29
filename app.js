@@ -17,12 +17,8 @@ function main() {
   }
   program = shaderprogram(gl);
 
-  document.addEventListener("keydown", (event) =>
-    keyBoardhandler(gl, program, event)
-  );
-  document.addEventListener("mousedown", (event) =>
-    mousehandler(gl, event)
-  );
+  document.addEventListener("keydown", (event) => keyBoardhandler(event));
+  document.addEventListener("mousedown", (event) => mousehandler(gl, event));
 }
 
 function resizeCanvasToDisplaySize(canvas) {
@@ -45,120 +41,146 @@ function resizeCanvasToDisplaySize(canvas) {
 
 var minind = null;
 var translations = {};
+var rotations = {};
+var centroid = { x: 0, y: 0 };
 
-/*function bound_centroid(scale){
-    minX = Infinity
-    maxX = -Infinity
-    minY = Infinity
-    maxY = -Infinity
-    for(var i in objects)
-    {
-        if(objects.i.type === "s")
-        {
-            x1 = (objects.i.x - 400)/400 + 0.05*scale
-            x2 = (objects.i.x - 400)/400 - 0.05*scale
-            y1 = (objects.i.y - 400)/400 + 0.05*scale
-            y2 = (objects.i.y - 400)/400 - 0.05*scale
+function bound_centroid() {
+  minX = Infinity;
+  maxX = -Infinity;
+  minY = Infinity;
+  maxY = -Infinity;
+  for (var i in objects) {
+    if (objects[i].type === "s") {
+      x1 = (objects[i].x - 400) / 400 + 0.05 * objects[i].s;
+      x2 = (objects[i].x - 400) / 400 - 0.05 * objects[i].s;
+      y1 = (objects[i].y - 400) / 400 + 0.05 * objects[i].s;
+      y2 = (objects[i].y - 400) / 400 - 0.05 * objects[i].s;
+      if (maxX < x1) maxX = x1;
+      if (minX > x2) minX = x2;
+      if (maxY < y1) maxY = y1;
+      if (minY > y2) minY = y2;
+    } else if (objects[i].type === "r") {
+      x1 = (objects[i].x - 400) / 400 + 0.05 * objects[i].s;
+      x2 = (objects[i].x - 400) / 400 - 0.05 * objects[i].s;
+      y1 = (objects[i].y - 400) / 400 + 0.1 * objects[i].s;
+      y2 = (objects[i].y - 400) / 400 - 0.1 * objects[i].s;
 
-            if(minX > x2) minX = x2;
-            if(maxX < x1) maxX = x1;
-            if(minX > y2) minX = y2;
-            if(maxX < y1) maxX = y1;
-
-             
-        }
-        else if(objects.i.type === "r")
-        {
-            
-            x1 = (objects.i.x - 400)/400 + 0.05*scale
-            x2 = (objects.i.x - 400)/400 - 0.05*scale
-            y1 = (objects.i.y - 400)/400 + 0.1*scale
-            y2 = (objects.i.y - 400)/400 - 0.1*scale
-
-            if(minX > x2) minX = x2;
-            if(maxX < x1) maxX = x1;
-            if(minX > y2) minX = y2;
-            if(maxX < y1) maxX = y1;
-
-
-        }
-        else if(objects.i.type === "c")
-        {
-            
-            x1 = (objects.i.x - 400)/400 + 0.1*scale
-            x2 = (objects.i.x - 400)/400 - 0.1*scale
-            y1 = (objects.i.y - 400)/400 + 0.1*scale
-            y2 = (objects.i.y - 400)/400 - 0.1*scale
-
-            if(minX > x2) minX = x2;
-            if(maxX < x1) maxX = x1;
-            if(minX > y2) minX = y2;
-            if(maxX < y1) maxX = y1;
-
-        }
+      if (maxX < x1) maxX = x1;
+      if (minX > x2) minX = x2;
+      if (maxY < y1) maxY = y1;
+      if (minY > y2) minY = y2;
+    } else if (objects[i].type === "c") {
+      x1 = (objects[i].x - 400) / 400 + 0.1 * objects[i].s;
+      x2 = (objects[i].x - 400) / 400 - 0.1 * objects[i].s;
+      y1 = (objects[i].y - 400) / 400 + 0.1 * objects[i].s;
+      y2 = (objects[i].y - 400) / 400 - 0.1 * objects[i].s;
+      if (maxX < x1) maxX = x1;
+      if (minX > x2) minX = x2;
+      if (maxY < y1) maxY = y1;
+      if (minY > y2) minY = y2;
     }
-}*/
+  }
 
-function keyBoardhandler(gl, program, event) {
+  centroid = { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
+}
+
+function keyBoardhandler(event) {
   key = event.key.toLowerCase();
   switch (key) {
     case "m":
-      mode = ++mode % 3;
+      mode++;
+      mode = mode % 3;
+      if (mode === 0) rotations = {};
+      else if (mode === 1) key = null;
+      else if (mode === 2) {
+        if (minind !== null) {
+          objects[minind].setcolor();
+          minind = null;
+        }
+        bound_centroid();
+      }
+      renderobjects();
       break;
     case "arrowup":
       if (mode === 1) {
-        if (!(minind in translations)) translations[minind] = { x: 0, y: 10, s: 1 };
+        if (!(minind in translations))
+          translations[minind] = { x: 0, y: 10, s: 1 };
         else translations[minind].y += 10;
       }
       renderobjects();
       break;
     case "arrowdown":
       if (mode === 1) {
-        if (!(minind in translations)) translations[minind] = { x: 0, y: -10, s: 1 };
+        if (!(minind in translations))
+          translations[minind] = { x: 0, y: -10, s: 1 };
         else translations[minind].y -= 10;
       }
       renderobjects();
       break;
     case "arrowleft":
       if (mode === 1) {
-        if (!(minind in translations)) translations[minind] = { x: -10, y: 0, s: 1 };
+        if (!(minind in translations))
+          translations[minind] = { x: -10, y: 0, s: 1 };
         else translations[minind].x -= 10;
+      } else if (mode === 2) {
+        for (var i in objects) {
+          if (i in rotations) {
+            rotations[i].t += 10;
+          } else {
+            rotations[i] = { x: centroid.x, y: centroid.y, t: 10 };
+          }
+        }
       }
-      else if(mode === 2){
-        
-    }
-    renderobjects()
+      renderobjects();
       break;
     case "arrowright":
       if (mode === 1) {
-        if (!(minind in translations)) translations[minind] = { x: 10, y: 0, s: 1 };
+        if (!(minind in translations))
+          translations[minind] = { x: 10, y: 0, s: 1 };
         else translations[minind].x += 10;
+      } else if (mode === 2) {
+        for (var i in objects) {
+          if (i in rotations) {
+            rotations[i].t -= 10;
+          } else {
+            rotations[i] = { x: centroid.x, y: centroid.y, t: -10 };
+          }
+        }
       }
       renderobjects();
       break;
     case "+":
-      if(mode === 1) {
-        if (!(minind in translations)) translations[minind] = { x: 0, y: 0, s: 1.05 };
+      if (mode === 1) {
+        if (!(minind in translations))
+          translations[minind] = { x: 0, y: 0, s: 1.05 };
         else translations[minind].s += 0.05;
       }
       renderobjects();
       break;
     case "-":
-      if(mode === 1) {
-        if (!(minind in translations)) translations[minind] = { x: 0, y: 0, s: 0.95 };
-        else translations[minind].s = Math.max(translations[minind].s-0.05, 0.5);
+      if (mode === 1) {
+        if (!(minind in translations))
+          translations[minind] = { x: 0, y: 0, s: 0.95 };
+        else
+          translations[minind].s = Math.max(translations[minind].s - 0.05, 0.5);
       }
       renderobjects();
       break;
     case "x":
-      if(minind !== null) {
-        delete objects[minind]
-        delete translations[minind]
-        minind = null
+      if (minind !== null) {
+        delete objects[minind];
+        delete translations[minind];
+        minind = null;
       }
       renderobjects();
       break;
   }
+
+  var details = document.getElementById("details");
+  details.innerHTML = `
+    <p>Current Mode Value: ${mode}</p>
+    <p>Keyboard Input Value: ${key}</p>
+  `;
 }
 
 var object_count = 0;
@@ -169,14 +191,10 @@ function mousehandler(gl, event) {
   let x = event.clientX - cvs.left;
   let y = cvs.bottom - event.clientY;
 
-  //console.log(x,y)
-
   rasteriseshapes(x, y);
 }
 
-var minind = null
-
-
+var minind = null;
 
 function rasteriseshapes(x, y) {
   if (mode === 0) {
@@ -202,51 +220,39 @@ function rasteriseshapes(x, y) {
       objects[minind].setcolor();
     }
 
-    let minint = Infinity
-    for(var i in objects) {
-        let d = objects[i].near(x, y)
-        minint = Math.min(minint, d)
-        if(minint === d) minind = i
+    let minint = Infinity;
+    for (var i in objects) {
+      let d = objects[i].near(x, y);
+      minint = Math.min(minint, d);
+      if (minint === d) minind = i;
     }
 
     if (minind !== null) {
       objects[minind].setcolor([0, 0, 0, 1]);
-
     }
     renderobjects();
-  }
-
-  else if(mode === 1)
-  {
-    if(minind !== null){
-        console.log("hello")
-        objects[minind].setcolor()
+  } else if (mode === 1) {
+    if (minind !== null) {
+      objects[minind].setcolor();
     }
-      var dist = [];
-      var minint = Infinity
-      
-    for(var i= objects.length - 1;i>=0;i--)
-    {
-        let d = objects[i].near(x,y)
-        dist.push(d)
-        if(d < minint)
-        {
-            minint = d;
-            minind = i;
-        } 
-    }
+    var dist = [];
+    var minint = Infinity;
 
-    console.log(dist)
-    console.log(minind)
-    objects[minind].setcolor([0,0,0,1])
-    
-    for (var i = 0; i < objects.length; i++) {
-        //console.log(objects[i].x)
-        objects[i].render()
+    for (var i = objects.length - 1; i >= 0; i--) {
+      let d = objects[i].near(x, y);
+      dist.push(d);
+      if (d < minint) {
+        minint = d;
+        minind = i;
       }
+    }
 
+    objects[minind].setcolor([0, 0, 0, 1]);
+
+    for (var i = 0; i < objects.length; i++) {
+      objects[i].render();
+    }
   }
-  
 }
 
 class Shape {
@@ -279,43 +285,64 @@ class Shape {
     else if (this.type === "c") this.color = color ? color : [0, 0, 1, 1];
   }
 
-  setcolor(color = null){
-      if(this.type === "s") this.color = color ? color : [1,0,1,1]
-      else if(this.type === "r") this.color = color ? color : [1,0,0,1]
-      else if(this.type === "c") this.color = color ? color : [0,0,1,1]
-      
+  setcolor(color = null) {
+    if (this.type === "s") this.color = color ? color : [1, 0, 1, 1];
+    else if (this.type === "r") this.color = color ? color : [1, 0, 0, 1];
+    else if (this.type === "c") this.color = color ? color : [0, 0, 1, 1];
   }
 
-  render() {
-    this.draw(gl, program, this.x+this.tx, this.y+this.ty, this.color, this.s);
+  render(rotate = null) {
+    if (rotate) {
+      this.draw(
+        gl,
+        program,
+        this.x + this.tx,
+        this.y + this.ty,
+        this.color,
+        this.s,
+        rotate
+      );
+      return;
+    }
+    this.draw(
+      gl,
+      program,
+      this.x + this.tx,
+      this.y + this.ty,
+      this.color,
+      this.s
+    );
   }
 
   near(mx, my) {
-    return this.distance(mx, my, this.x+this.tx, this.y+this.ty, this.s);
+    return this.distance(mx, my, this.x + this.tx, this.y + this.ty, this.s);
   }
 
   translate(x, y, s) {
     this.tx = x;
     this.ty = y;
-    this.s = s
+    this.s = s;
   }
 }
 
 function renderobjects() {
-  var length = Object.keys(objects).length
-  if(length > 0) {
+  var length = Object.keys(objects).length;
+  if (length > 0) {
     for (var i in objects) {
       if (i in translations) {
-        objects[i].translate(translations[i].x, translations[i].y, translations[i].s);
+        objects[i].translate(
+          translations[i].x,
+          translations[i].y,
+          translations[i].s
+        );
       }
-      objects[i].render();
+      if (i in rotations) {
+        objects[i].render(Object.assign({}, rotations[i]));
+      } else {
+        objects[i].render();
+      }
     }
   } else {
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   }
-
-
 }
-
-
-

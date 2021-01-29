@@ -1,4 +1,4 @@
-function drawcircle(gl, program, x, y, icolor, scale, rotate = {x:400, y:400, t:0}) {
+function drawcircle(gl, program, x, y, icolor, scale, rotate = {x:0, y:0, t:0}) {
   var positionAttributeLocation = gl.getAttribLocation(
     program,
     "vect_position"
@@ -9,9 +9,6 @@ function drawcircle(gl, program, x, y, icolor, scale, rotate = {x:400, y:400, t:
   var positionBuffer = gl.createBuffer();
 
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-  rotate.x = rotate.x - 400/400;
-  rotate.y = rotate.y -400/400;
 
   let x1 = (x - 400) / 400;
   let y1 = (y - 400) / 400;
