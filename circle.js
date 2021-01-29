@@ -1,4 +1,4 @@
-function drawcircle(gl, program, x, y, icolor) {
+function drawcircle(gl, program, x, y, icolor, scale) {
   var positionAttributeLocation = gl.getAttribLocation(
     program,
     "vect_position"
@@ -11,16 +11,16 @@ function drawcircle(gl, program, x, y, icolor) {
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
   let x1 = (x - 400) / 400;
-  let y1 = (y - 300) / 300;
+  let y1 = (y - 400) / 400;
   var positions = []
   for (var i = 0; i < 20; i++) {
     positions.push(
       x1,
       y1,
-      x1 + 0.06 * Math.cos((i * Math.PI) / 10),
-      y1 + 0.08 * Math.sin((i * Math.PI) / 10),
-      x1 + 0.06 * Math.cos(((i + 1) * Math.PI) / 10),
-      y1 + 0.08 * Math.sin(((i + 1) * Math.PI) / 10)
+      x1 + 0.1*scale * Math.cos((i * Math.PI) / 10),
+      y1 + 0.1*scale * Math.sin((i * Math.PI) / 10),
+      x1 + 0.1*scale * Math.cos(((i + 1) * Math.PI) / 10),
+      y1 + 0.1*scale * Math.sin(((i + 1) * Math.PI) / 10)
     );
   }
 
@@ -53,4 +53,19 @@ function drawcircle(gl, program, x, y, icolor) {
   );
 
   gl.drawArrays(gl.TRIANGLES, 0, 60);
+}
+
+
+function c_distance(x,y,cx,cy,scale){
+
+  d1 = Math.sqrt(((Math.abs(x-cx))/400)**2 + ((Math.abs(y-cy))/400)**2)
+
+  if(d1 < 0.1*scale)
+  {
+    return -Infinity
+  }
+  else
+  {
+    return (d1 - 0.1*scale);
+  }
 }
